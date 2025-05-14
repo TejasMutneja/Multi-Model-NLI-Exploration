@@ -29,7 +29,7 @@ with open(INPUT, newline="", encoding="utf-8") as fin, \
     writer.writerow(["id","prediction"])
 
     for row in tqdm(reader, desc="Few‐shot + SC", unit="row"):
-        # 1) Build the prompt lines properly, *without* embedding the actual instance yet
+        #  Build the prompt lines properly, *without* embedding the actual instance yet
         prompt_lines = [
             "Task",
             "You will be given two short texts: a Premise and a Hypothesis. Decide whether the Hypothesis is "
@@ -43,7 +43,7 @@ with open(INPUT, newline="", encoding="utf-8") as fin, \
             ""
         ]
 
-        # 2) Inject few-shot examples *before* the actual instance
+        #  Inject few-shot examples *before* the actual instance
         for idx, (prem, hyp, lbl) in enumerate(few_shot, start=1):
             prompt_lines += [
                 f"Example {idx}:",
@@ -53,7 +53,7 @@ with open(INPUT, newline="", encoding="utf-8") as fin, \
                 ""
             ]
 
-        # 3) Now append the actual example
+        #  Now append the actual example
         prompt_lines += [
             f"Premise:   {row['premise']}",
             f"Hypothesis:{row['hypothesis']}",
@@ -62,7 +62,7 @@ with open(INPUT, newline="", encoding="utf-8") as fin, \
 
         prompt = "\n".join(prompt_lines)
 
-        # 4) Sample K times and collect predictions
+        # Sample K times and collect predictions
         samples = []
         for _ in range(K):
             r = requests.post(
@@ -90,7 +90,7 @@ with open(INPUT, newline="", encoding="utf-8") as fin, \
             m = re.search(r"\b([012])\b", out)
             samples.append(m.group(1) if m else "1")
 
-        # 5) Final vote
+        #  Final vote
         writer.writerow([row["id"], majority_vote(samples)])
 
 print(f"✅ Wrote few‐shot self‐consistency predictions to {OUTPUT}")

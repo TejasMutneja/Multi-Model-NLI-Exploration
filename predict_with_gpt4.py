@@ -14,7 +14,7 @@ from sklearn.metrics import accuracy_score
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # ────────────────────────────────────────────────────────────────
-# 2) Configuration
+#  Configuration
 # ────────────────────────────────────────────────────────────────
 INPUT   = "val.csv"               # validation file must include a 'label' column
 MODEL   = "gpt-4o-mini"
@@ -22,7 +22,7 @@ N       = 100                     # number of random examples to evaluate
 SEED    = 42                     # for reproducibility
 
 # ────────────────────────────────────────────────────────────────
-# 3) Prompt template
+# Prompt template
 # ────────────────────────────────────────────────────────────────
 PROMPT = """
 Task
@@ -44,7 +44,7 @@ Answer:
 """
 
 # ────────────────────────────────────────────────────────────────
-# 4) Load all rows, then sample N randomly
+# Loading all rows, then sample N randomly
 # ────────────────────────────────────────────────────────────────
 with open(INPUT, newline="", encoding="utf-8") as fin:
     reader = csv.DictReader(fin)
@@ -54,7 +54,7 @@ random.seed(SEED)
 rows = random.sample(all_rows, N)
 
 # ────────────────────────────────────────────────────────────────
-# 5) Inference loop
+#  Inference loop
 # ────────────────────────────────────────────────────────────────
 y_true = []
 y_pred = []
@@ -80,7 +80,7 @@ for row in tqdm(rows, desc=f"GPT-4 random {N}", unit="row"):
     y_true.append(int(row["label"]))
 
 # ────────────────────────────────────────────────────────────────
-# 6) Compute and print accuracy
+#  Accuracy
 # ────────────────────────────────────────────────────────────────
 acc = accuracy_score(y_true, y_pred)
 print(f"\nAccuracy on {N} random examples: {acc:.3f}")
